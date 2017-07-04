@@ -99,10 +99,12 @@ import sys
 import time
 import unittest
 from xml.sax import saxutils
-from ParametrizedTestCase import ParametrizedTestCase
 
 class HTMLTestCase(unittest.TestCase):
-    def to_html(self):
+    def desc_html(self):
+        return ""
+
+    def result_html(self):
         return ""
 
 # ------------------------------------------------------------------------
@@ -778,8 +780,7 @@ class HTMLTestRunner(Template_mixin):
         name = t.id().split('.')[-1]
         doc = t.shortDescription() or ""
         desc = doc and ('%s: %s' % (name, doc)) or name
-        if isinstance(t, ParametrizedTestCase):
-            desc += "<br/>" + str(t.param)
+        desc += t.desc_html()
 
         tmpl = has_output and self.REPORT_TEST_WITH_OUTPUT_TMPL or self.REPORT_TEST_NO_OUTPUT_TMPL
 
@@ -804,7 +805,7 @@ class HTMLTestRunner(Template_mixin):
 
         img = ''
         if isinstance(t, HTMLTestCase):
-            img = t.to_html()
+            img = t.result_html()
         #print >>sys.stderr, str(t), t.screenshot, img
         row = tmpl % dict(
             tid = tid,
